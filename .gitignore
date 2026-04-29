@@ -13,3 +13,4 @@ obj/
 usersecrets.json
 appsettings.json
 *.pdf
+PROJECT_LOG.md

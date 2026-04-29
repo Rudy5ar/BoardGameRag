@@ -3,18 +3,34 @@ using UglyToad.PdfPig;
 
 namespace BoardGameRag;
 
-public class RulebookReader
+public static class RulebookReader
 {
     public static string ReadRules()
     {
-        var rulesDocument = PdfDocument.Open("../../../root rules.pdf");
-
+        using var document = PdfDocument.Open("root rules.pdf");
         var textBuilder = new StringBuilder();
         
-        foreach (var page in rulesDocument.GetPages())
+        foreach (var page in document.GetPages())
         {
             textBuilder.AppendLine(page.Text);
         } 
         return textBuilder.ToString();
+    }
+    
+    public static List<string> ReadRulesAsChunks()
+    {
+        List<string> chunks = [];
+        var chunkSize = 1000;
+        var overlap = 200;
+        
+        var documentText = ReadRules();
+        
+        for (int i = 0; i < documentText.Length; i += chunkSize - overlap)  
+        {
+            var lengthToGrab = Math.Min(chunkSize, documentText.Length - i);
+            chunks.Add(documentText.Substring(i, lengthToGrab));
+        }
+        
+        return chunks;
     }
 }
